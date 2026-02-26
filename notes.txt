@@ -1,0 +1,777 @@
+npm init -y :- The -y flag just says "yes" to all default questions automatically. This creates a package.json file inside your server folder.
+npm install express mongoose dotenv bcryptjs jsonwebtoken multer cors :- This will take a minute to install. You'll see a node_modules folder appear inside server/ after this.
+express — The actual web server framework. It lets us create routes like GET /api/projects, handle requests, send responses. Without this, we have no server.
+mongoose — Lets us talk to MongoDB using JavaScript. Instead of writing raw MongoDB queries, we write clean JS code. It also lets us define schemas (structure of our data).
+dotenv — Lets us store sensitive info like MongoDB URL, JWT secret in a .env file instead of hardcoding it in our code. Very important for security.
+bcryptjs — When a user registers, we never save their plain password. bcryptjs hashes it (converts to a random encrypted string). Even if DB is hacked, passwords are safe.
+jsonwebtoken — After login, we give the user a token (like a temporary ID card). Every protected request, user sends this token. We verify it to allow access.
+multer — Handles file uploads (like project thumbnails). When user uploads an image, multer catches it before it hits your route.
+cors — Your React app runs on port 5173, your Express server on port 5000. By default browsers block requests between different ports. cors fixes that.
+
+we need to add one important thing to package.json.
+
+Two things we need to do:
+1. Add "type": "module" OR use require() syntax
+Since you're learning and your class probably taught require() style (CommonJS), we'll stick with that. No changes needed for this.
+2. Add a dev script using nodemon
+Right now if you change any code in server, you'd have to manually stop and restart the server every time. Nodemon watches your files and auto-restarts. Essential for development.
+npm install --save-dev nodemon (--save-dev means it's only for development, not production)
+Then update your scripts section in package.json to this:
+
+
+server.js — The Entry Point
+Before writing, understand what this file does:
+Think of server.js as the main gate of your backend. It's the first file that runs. 
+It sets up the express app, connects all middleware, connects to database, and starts listening for requests on a port.
+
+Understand what each part does:
+
+dotenv.config() — loads your .env file so process.env.PORT works
+connectDB() — calls our database connection function (we'll write this next)
+app.use(cors()) — allows React (port 5173) to talk to this server (port 5000)
+app.use(express.json()) — without this, you can't read req.body data
+app.use("/uploads", express.static("uploads")) — makes images in uploads folder accessible via URL
+
+
+config/db.js — MongoDB Connection
+Before writing, understand what this file does:
+This file is responsible for connecting your Express app to MongoDB. 
+We write it separately (not in server.js) to keep our code clean and organized. 
+This is called separation of concerns — each file has one job.
+
+Understand what each part does:
+
+- `async/await` — connecting to DB takes time, so we use async/await to wait for it
+- `try/catch` — if connection fails, we catch the error and log it
+- `process.exit(1)` — if DB fails, there's no point running the server, so we shut it down
+- `process.env.MONGO_URI` — the actual MongoDB URL comes from `.env` file (we'll set this now)
+- `module.exports` — we export this function so `server.js` can import and call it
+
+
+.env
+What each variable means:
+
+PORT — port your server runs on
+MONGO_URI — address of your local MongoDB, devlog is the database name (MongoDB will auto create it)
+JWT_SECRET — secret key used to sign JWT tokens, keep this private always
+
+The key I gave you devlog_super_secret_key_2024 works but it's weak and guessable. For a CV project that goes on GitHub and gets deployed, you want a proper secret.
+Run this in your terminal:
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+Let's run the server and see if everything connects!
+npm run dev
+You should see something like this:
+```
+[nodemon] starting `node server.js`
+Server running on port 5000
+MongoDB Connected: localhost
+
+PERFECT! Everything is working!
+Look at what you just did:
+
+✅ Express server is running on port 5000
+✅ dotenv loaded your .env file (3 variables)
+✅ MongoDB connected successfully
+
+Let's also test the test route we wrote in server.js.
+Open your browser and go to:
+http://localhost:5000
+You should see:
+DevLog API is running...
+This confirms your server is live and responding to requests.
+
+
+models/User.js — User Model
+Before writing, understand what a Mongoose Model is:
+You know how in MongoDB data is stored as documents (like JSON objects)? 
+A Mongoose Schema defines the structure of that document — 
+what fields it has, what type each field is, whether it's required or not. Think of it like a blueprint before building.
+A Model is created from that schema and it's what we actually use to interact with the database (create, find, update, delete).
+
+Understand the key things here:
+
+required: true — this field must be provided, otherwise MongoDB will throw an error
+unique: true — MongoDB creates an index to ensure no duplicates
+trim: true — if user types "  john  " it gets saved as "john"
+lowercase: true — "John@Gmail.Com" gets saved as "john@gmail.com"
+timestamps: true — automatically adds createdAt and updatedAt to every document, very useful
+mongoose.model("User", userSchema) — first argument "User" becomes the collection name in MongoDB 
+as users (mongoose automatically lowercases and pluralizes it)
+
+
+One important thing to notice:
+We are NOT hashing the password here in the model. 
+We'll hash it in the controller when the user registers. This keeps things simple and easy to understand.
+
+Ques by me:-
+so if we are not hashing the password here the original password will be saved in the database while creating? does it will not create privacy concerns??
+
+Excellent question! This shows you're thinking like a real developer. 🙌
+
+No, the original password will NOT be saved. Let me clear this up completely.
+There are two places where we could hash the password:
+
+Option 1 — Hash in the Model (using mongoose middleware called pre save hook)
+
+Option 2 — Hash in the Controller (manually before saving)
+
+Both approaches hash the password before saving. The difference is just where we write that hashing code.
+
+I said "we'll hash it in the controller" — meaning we'll do it manually in the register function like this:
+
+js
+const hashedPassword = await bcrypt.hash(password, 10);
+```
+And then save `hashedPassword` to the database, **never the original password.**
+---
+**So the flow will be:**
+```
+User types password "john123"
+      ↓
+bcrypt.hash("john123", 10)
+      ↓
+Saves "$2a$10$xK9mN2..." in MongoDB
+      ↓
+Original password is NEVER stored anywhere ✅
+The 10 is called salt rounds — it means bcrypt runs the hashing algorithm 10 times, making it extremely hard to reverse engineer.
+
+
+
+What does models/Project.js do?
+You know how we defined the User blueprint in User.js — what fields a user has, what type they are, what's required?
+Project.js does the exact same thing but for a Project.
+It tells MongoDB:
+
+What a project document looks like
+What fields it must have
+What type each field is
+What values are allowed
+
+
+Think of it like this in real life:
+When you fill a college project submission form, the form has fixed fields — Project Title, Description, Tech Used, Status, GitHub Link. You can't submit without filling required fields, and status can only be selected from a dropdown (not free text).
+That's exactly what our Project schema is — a form structure for every project saved in MongoDB.
+
+And the user field specifically?
+Every project needs to know who created it. So we store the creator's MongoDB _id inside the project. This way when a logged-in user opens their projects page, we can fetch only their projects by matching this user field with their _id.
+Project document in MongoDB:
+{
+  user: "64abc123...",   ← this is the logged-in user's _id
+  title: "DevLog",
+  status: "In Progress",
+  ...
+}
+
+Two new things to understand here:**
+
+**1. `ref: "User"` — Population/Relationship**
+```
+user: ObjectId  →  ref: "User"
+This creates a relationship between Project and User. Every project stores the _id of the user who created it. 
+Later we can use .populate("user") to get full user details instead of just the ID. Think of it like a foreign key in SQL.
+2. enum — Restricted Values
+jsenum: ["In Progress", "Completed", "On Hold"]
+This means the status field will only accept these three values. 
+If someone tries to save status: "Done" — MongoDB will throw a validation error automatically. Very useful for data integrity.
+
+ser field = just the creator's _id
+ref: "User" = tells Mongoose where to look when we want full details
+
+
+controllers/authController.js
+But before writing, let me explain the overall flow of how a request works in our backend so you understand why we have separate files for routes and controllers:
+
+Request Flow:
+Request comes in
+      ↓
+server.js  (receives it, forwards to correct route)
+      ↓
+authRoutes.js  (matches the URL, calls correct controller function)
+      ↓
+authController.js  (actual logic — talks to DB, sends response)
+
+Simple analogy:
+
+server.js — reception of a hospital, directs you to correct department
+routes — the department (Auth dept, Projects dept)
+controllers — the actual doctor who does the work
+
+This is why we don't write logic directly in routes — separation of concerns. Each file has one clear job.
+
+We'll write 3 functions in authController.js:
+
+registerUser — signup logic
+loginUser — login logic
+getMe — get logged in user info
+
+Function 1 — registerUser
+What this function does:
+
+Takes name, username, email, password from request body
+Checks if user already exists
+Hashes the password
+Saves new user to MongoDB
+Sends back a JWT token
+
+Understand the new things here:
+$or operator:
+jsUser.findOne({ $or: [{ email }, { username }] })
+This checks if EITHER the email OR username already exists in DB. If yes, we reject registration. This is a MongoDB query operator.
+
+bcrypt.genSalt(10):
+Salt is random data added to password before hashing — makes every hash unique even if two users have same password.
+
+jwt.sign({ id }, secret, { expiresIn: "7d" }):
+Creates a token that contains the user's _id inside it, signed with our secret key, and expires in 7 days. After 7 days user has to login again.
+
+res.status(201): HTTP status 201 means "Created" — something new was successfully created. 
+200 means "OK", 400 means "Bad Request", 500 means "Server Error."
+
+JWT_SECRET — stays on your server, never leaves, used to sign the token
+JWT Token — created using that secret, sent to the user after login/register
+
+generateToken takes the user's _id, creates a signed JWT token using our JWT_SECRET, 
+sets it to expire in 7 days, and returns it. 
+This token is sent to the user and they must send it back with every protected request to prove who they are.
+
+Function 2 — loginUserWhat this function does:
+
+Takes email and password from request body
+Checks if user exists with that email
+Compares entered password with hashed password in DB
+If everything matches, sends back JWT token
+
+**Understand the key thing here:**
+
+**`bcrypt.compare(password, user.password)`:**
+
+This is the magic of bcrypt. You can't "unhash" a password — it's a one way process. 
+So instead bcrypt **hashes the entered password the same way** and checks if both hashes match.
+```
+User enters: "john123"
+bcrypt hashes it: "$2a$10$xyz..."
+Compares with DB: "$2a$10$xyz..." ✅ match!
+Why we say "Invalid credentials" for both wrong email AND wrong password:
+We never tell the user specifically which one is wrong. 
+If we say "email not found" — a hacker knows that email doesn't exist. 
+If we say "wrong password" — they know the email is correct and can try to brute force the password. 
+Saying "Invalid credentials" for both keeps it secure. This is called security through obscurity
+
+
+Ques:-
+one thing i am curious about is that bcrypt is random string while hashing then how it creates same string while login with the same password
+
+You're right that bcrypt adds a random salt while hashing. But here's the secret —
+bcrypt stores the salt INSIDE the hash itself!
+
+Look at a bcrypt hash carefully:
+
+$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LPVyRNnB2Bu
+This hash has 3 parts:
+
+$2a$        → bcrypt version
+$10$        → salt rounds (10)
+N9qo8uLOickgx2ZMRZoMye  → the SALT (random, stored here)
+IjZAgcfl7p92ldGxad68LPVyRNnB2Bu → the actual hashed password
+So when you login, bcrypt.compare() does this:
+
+Step 1 — extracts the salt from the stored hash
+Step 2 — uses that SAME salt to hash the entered password
+Step 3 — compares both hashes
+Registration:  "john123" + randomSalt → "$2a$10$ABC...xyz"
+               (salt ABC is stored inside the hash)
+
+Login:         "john123" + extractedSalt(ABC) → "$2a$10$ABC...xyz"
+               Matches! ✅
+
+So bcrypt is NOT fully random at comparison time — it reuses the same salt that was stored during registration. That's the genius of bcrypt design. 
+
+Function 3 — getMe
+What this function does:
+Just returns the currently logged in user's information. 
+This is useful when the React app loads and needs to know who is logged in without asking them to login again.
+
+Understand the two new things here:**
+
+**`req.user.id`:**
+This comes from our `authMiddleware` which we'll write next. The middleware verifies the JWT token and attaches the user's data to `req.user`. 
+So by the time request reaches `getMe`, we already know who the user is.
+
+**`.select("-password")`:**
+This tells Mongoose — fetch everything from user document EXCEPT the password field. 
+The `-` minus sign means exclude. We never send password back in any response even if it's hashed.
+
+
+middleware/authMiddleware.js
+Middleware is a function that runs between the request and the final controller function. Think of it like a security guard at a gate — before you reach the actual destination, the guard checks your ID first.
+Request → Middleware (checks token) → Controller (actual logic)
+If token is valid — guard lets you in ✅
+If token is invalid — guard stops you right there ❌
+
+In our case:
+Every protected route like GET /api/projects will first pass through authMiddleware which:
+
+Reads the token from request headers
+Verifies it using JWT_SECRET
+If valid — attaches user info to req.user and moves forward
+If invalid — stops and sends 401 Unauthorized error
+
+**Understand the key things here:**
+
+**`Authorization: Bearer <token>`:**
+This is the standard way of sending JWT token in request headers. When React sends a request to a protected route it will send:
+```
+Headers: {
+  Authorization: "Bearer eyJhbGc..."
+}
+
+We split by space and take index [1] to get just the token part.
+jwt.verify(token, JWT_SECRET):
+This checks if the token was actually created by our server using our secret. If someone sends a fake token, this will throw an error and we catch it.
+decoded:
+After verification, jwt gives us back the data we stored inside the token — which was { id: user._id }. So decoded.id gives us the user's ID.
+next():
+This is special to middleware — it means "I'm done here, pass the request to the next function." Without calling next(), the request would just hang forever.
+
+routes/authRoutes.js
+understand what routes do:
+Remember our analogy — controllers are the doctors, routes are the departments. Routes just map a URL + HTTP method to a controller function. That's their only job.
+POST /api/auth/register  →  registerUser function
+POST /api/auth/login     →  loginUser function
+GET  /api/auth/me        →  getMe function (protected)
+
+Understand the key things here:
+express.Router():
+Creates a mini express app just for handling routes. We can define routes on it and export it.
+protect in the middle:
+jsrouter.get("/me", protect, getMe);
+See how protect sits between the route and getMe? That's middleware in action — request first goes to protect, if token is valid it calls next() and reaches getMe. If not, it stops right there.
+Why no /api/auth here?
+Because we'll add that prefix in server.js when we register this router. So here we just write /register, /login, /me.
+
+Now we need to register this route in server.js. Open server.js and add these two lines:
+After your existing require statements at top add:
+jsconst authRoutes = require("./routes/authRoutes");
+And after your middleware section add:
+jsapp.use("/api/auth", authRoutes);
+
+
+Testing on POSTMAN
+Test 1 — Register User
+Open Postman and do this:
+
+Click New Request
+Select method POST
+Enter URL: http://localhost:5000/api/auth/register
+Click Body tab → select raw → select JSON from dropdown
+Enter this:
+
+json{
+  "name": "John Doe",
+  "username": "johndoe",
+  "email": "john@gmail.com",
+  "password": "123456"
+}
+
+Click Send
+
+Now go check MongoDB Compass — refresh it and you'll see the devlog database has appeared with a users collection inside it. Open it and see your user document! 🙂
+
+Notice one important thing in Compass:
+The password saved in MongoDB will look like:
+$2a$10$xK9mN2...  (hashed)
+NOT 123456 — this proves bcrypt hashing is working perfectly! ✅
+
+Now let's test Login API.
+Test 2 — Login User
+
+New Request → POST
+URL: http://localhost:5000/api/auth/login
+Body → raw → JSON:
+
+json{
+  "email": "ambikaraj2114@gmail.com",
+  "password": "123456"
+}
+
+Click Send
+
+NOTE:
+Understand the difference:
+req — the request object, contains data coming FROM the user (body, headers, params)
+res — the response object, used to send data BACK to the user
+
+We always read incoming data from req.body, never from res.body. res.body doesn't even exist
+
+One thing to notice in the response:
+__v: 0 — this is a Mongoose version key, automatically added. Totally normal, ignore it.
+createdAt and updatedAt — these came automatically because of timestamps: true in our schema. You didn't write any extra code for this! 
+
+
+JWT token does two things in our app:
+1. Proves identity — after login, we give the user a token. This token contains their _id inside it. Every time they make a request, they send this token back to us.
+2. Protects routes — our authMiddleware reads that token, verifies it, and extracts the user's _id from it. This way we always know which user is making the request without asking them to send email/password every time.
+Login → get token
+      ↓
+Every protected request → send token in headers
+      ↓
+Middleware verifies token → extracts user id
+      ↓
+Controller knows who is making the request ✅
+Think of it like a movie ticket — you buy it once (login),
+and show it every time you enter (protected requests).
+
+
+server/utils/multer.js
+Step 1: Multer Configuration
+Before writing, understand what Multer does:
+When a user uploads a project thumbnail, that image file comes in the request. But by default Express cannot handle file uploads — 
+it only handles JSON data. Multer is a middleware that intercepts file uploads,
+saves them to our uploads folder, and makes the file info available in req.file.
+
+Understand the key things here:
+diskStorage:
+Tells multer where to save files and what to name them. We use Date.now() before the filename to make it unique — if two users upload photo.jpg, they won't overwrite each other.
+fileFilter:
+We only want images in our uploads folder, not random files. This checks both the file extension AND the mimetype (the actual file type) for security.
+limits: { fileSize: 5MB }:
+Prevents users from uploading huge files that could slow down or crash the server.
+
+What is cb?
+cb stands for callback — it's a function that multer gives us to call when we're done making a decision.
+Think of it like this — multer asks you two questions:
+
+"Where should I save this file?"
+"What should I name it?"
+
+You make your decision and then call cb to tell multer your answer:
+jscb(null, "uploads/")        // null = no error, "uploads/" = save here
+cb(null, Date.now() + filename) // null = no error, this = use this name
+cb(new Error("..."), false)  // error = reject this file
+The first argument is always **error** (null if no error), second is your **answer.**
+
+
+controllers/projectController.js
+Before writing, understand what this file does:
+This is the brain of our project features. It handles all 5 operations:
+createProject   → POST   /api/projects
+getProjects     → GET    /api/projects
+getProject      → GET    /api/projects/:id
+updateProject   → PUT    /api/projects/:id
+deleteProject   → DELETE /api/projects/:id
+
+Function 1 — createProject
+What it does:
+
+Takes project data from request body
+Takes thumbnail file from multer (req.file)
+Saves new project to MongoDB linked to logged in user
+
+Understand the two important things here:
+req.file:
+This comes from multer middleware. If user uploaded a file, req.file contains its info including filename. 
+If no file uploaded, req.file is undefined — so we use a ternary to handle both cases.
+techStack splitting:
+jstechStack.split(",").map((t) => t.trim())
+When data comes from a form, arrays sometimes come as a comma separated string like "React, Node, MongoDB".
+We split it by comma and trim spaces to convert it into a proper array ["React", "Node", "MongoDB"].
+
+Function 2 — getProjects
+What it does:
+
+Fetches all projects of the logged in user
+Supports search by title or techStack
+Supports filter by status
+
+This is where our search & filter feature lives! 🔍
+
+Understand the key things here:**
+
+**`req.query`:**
+Query params are the values after `?` in a URL. For example:
+```
+GET /api/projects?search=react&status=Completed
+Here req.query.search = "react" and req.query.status = "Completed". This is how search and filter values reach our backend.
+$regex with $options: "i":
+This is MongoDB's way of doing a search. $regex matches a pattern and "i" means case insensitive — so searching "react" will also match "React" and "REACT". Think of it like a LIKE query in SQL.
+sort({ createdAt: -1 }):
+Returns projects in descending order — newest first. -1 means descending, 1 means ascending.
+Building query dynamically:
+jslet query = { user: req.user.id };
+if (search) { query.$or = [...] }
+if (status) { query.status = status }
+We start with a base query and add conditions only if they exist. This way the same route handles all cases — no search, only search, only filter, both together.
+
+Understand the key things here:**
+
+**`req.params.id`:**
+Params are values inside the URL itself. For example:
+```
+GET /api/projects/64abc123...
+Here req.params.id = "64abc123...". This is different from req.query which comes after ?.
+project.user.toString() !== req.user.id:
+MongoDB stores user as an ObjectId, but req.user.id is a string. We use .toString() to convert ObjectId to string before comparing. 
+This check ensures a user can only edit/delete their own projects, not someone else's.
+?? vs || operator:
+project.githubLink = req.body.githubLink ?? project.githubLink;
+We use ?? (nullish coalescing) for optional fields like githubLink and liveLink because they can be intentionally set to empty string "". 
+With ||, empty string "" is falsy so it would keep the old value. With ?? it only falls back if value is null or undefined.
+
+What does routes/projectRoutes.js do?
+routes are just pathways that connect incoming URLs to the correct controller logic
+Remember our analogy — routes are like departments that map a URL to a controller function.
+This file does exactly that for all project related URLs:
+POST   /api/projects        → createProject
+GET    /api/projects        → getProjects
+GET    /api/projects/:id    → getProject
+PUT    /api/projects/:id    → updateProject
+DELETE /api/projects/:id    → deleteProject
+
+But this file has THREE middlewares working together:
+Request comes in
+      ↓
+protect → checks JWT token (is user logged in?)
+      ↓
+upload.single → handles file upload (did user send an image?)
+      ↓
+controller → actual logic (create/read/update/delete)
+Not every route needs all three. For example:
+jsrouter.get("/", protect, getProjects);
+GET request just fetches data — no file upload needed, so no upload.single here.
+jsrouter.post("/", protect, upload.single("thumbnail"), createProject);
+POST request creates a project WITH a thumbnail — needs all three.
+
+Why do we register this in server.js?
+projectRoutes.js only knows about paths like / and /:id. It doesn't know the full URL. When we write this in server.js:
+jsapp.use("/api/projects", projectRoutes);
+```
+
+We're telling Express — *"any request starting with `/api/projects` should go to projectRoutes."* So the full URLs become:
+```
+/api/projects + /     = /api/projects
+/api/projects + /:id  = /api/projects/:id
+
+Understand the key thing here:**
+
+**`upload.single("thumbnail")`:**
+This is multer middleware — it processes a single file upload with the field name `"thumbnail"`. It sits between `protect` and the controller. So the flow is:
+Request → protect (verify token) → upload.single (handle file) → controller
+The field name "thumbnail" must match exactly what the frontend sends. We'll make sure of this when building the form in React.
+
+
+routes/publicRoutes.js
+This is the only route in our entire app that is not protected. Anyone on the internet can access it — even without logging in.
+When someone visits /u/ambikaraj they should see Ambika's completed projects as a portfolio. No login required because it's a public showcase page.
+
+First create the file — server/routes/publicRoutes.js
+Before writing, think about what this route needs to do:
+
+Get the username from the URL
+Find that user in MongoDB
+Find all their Completed projects
+Send it back
+Notice something interesting here:
+For this route we wrote the logic directly in the routes file instead of a separate controller. This is fine for simple single routes — 
+creating a whole controller file for just one function would be overkill. This is a judgment call developers make.
+
+Any user's public portfolio can be accessed just by knowing their username:
+/api/public/ambikaraj    → shows Ambika's completed projects
+/api/public/johndoe      → shows John's completed projects
+/api/public/anyusername  → shows that user's completed projects
+
+This is the beauty of this route:
+The :username in the URL is dynamic — it changes based on whoever's profile you want to see. MongoDB finds that user and returns only their Completed projects.
+And on the frontend, when we build the Public Profile page, the URL will look like:
+http://localhost:5173/u/ambikaraj
+Anyone with this link can see your portfolio — no login needed. This is what makes it a shareable portfolio link that you can put on your CV or share with recruiters! 😊
+
+So the full flow is:
+Recruiter gets your link → visits /u/ambikaraj
+      ↓
+Frontend calls /api/public/ambikaraj
+      ↓
+Backend finds user → fetches completed projects
+      ↓
+Recruiter sees your portfolio 
+
+
+
+Perfect! Now the fun part — testing all project APIs in Postman! 🎉
+
+First make sure your server is still running. Check terminal for:
+Server running on port 5000
+MongoDB Connected: localhost
+
+Test 1 — Create Project
+
+New Request → POST
+URL: http://localhost:5000/api/projects
+Click Authorization tab → Bearer Token → paste your token from login
+Click Body tab → select form-data (NOT raw JSON this time — because we're sending a file too!)
+Add these fields:
+
+KEYVALUEtitleMy First ProjectdescriptionThis is a test projecttechStackReact, Node, MongoDBstatusIn ProgressgithubLinkhttps://github.com/testliveLinkhttps://test.comthumbnail(click file, select any image from your PC)
+
+Click Send
+
+
+Important — why form-data instead of raw JSON?
+Because we're sending a file along with text data. Raw JSON can only send text. Form-data can send both text and files together. This is why multer exists — to handle form-data requests. 😊
+
+Test 2 — Get All Projects
+
+New Request → GET
+URL: http://localhost:5000/api/projects
+Authorization → Bearer Token → paste token
+Send
+
+Test 3 — Search (add this to URL)
+http://localhost:5000/api/projects?search=react
+Test 4 — Filter by status
+http://localhost:5000/api/projects?status=In Progress
+
+Test 5 — Get Single Project
+
+GET → http://localhost:5000/api/projects/699e9aee42744083b4bbb5d7
+Authorization → Bearer Token
+Send
+
+Test 6 — Delete Project
+
+DELETE → http://localhost:5000/api/projects/699e9aee42744083b4bbb5d7
+Authorization → Bearer Token
+Send
+
+Last Test — Public Profile Route
+
+New Request → GET
+URL: http://localhost:5000/api/public/ambikaraj
+No token needed — this is a public route!
+Send
+
+{
+    "user": {
+        "_id": "699c973cfcda9eb20200e6bb",
+        "name": "Ambika Raj",
+        "username": "ambikaraj",
+        "email": "ambikaraj2114@gmail.com",
+        "createdAt": "2026-02-23T18:06:52.589Z",
+        "updatedAt": "2026-02-23T18:06:52.589Z",
+        "__v": 0
+    },
+    "projects": []
+}
+why projects are empty even if i didn't deleted them yet?
+
+Projects are empty because the public profile only shows Completed projects!
+Remember this line in our publicRoutes.js:
+jsconst projects = await Project.find({
+  user: user._id,
+  status: "Completed",  // ← only completed projects!
+});
+Your test project has status "In Progress" — so it doesn't show here. This is working exactly as intended! ✅
+
+This makes perfect sense for a portfolio:
+You don't want to show half-finished projects to recruiters. Only your Completed projects appear on your public profile. 😊
+
+
+
+Frontend
+
+Tailwind css added
+index.css
+What we just set up:
+
+Syne font for headings — bold and distinctive
+DM Sans for body — clean and readable
+Custom scrollbar with our accent color
+.glass class — reusable glassmorphism effect for cards
+.btn-glow class — glowing button effect
+.page-transition — smooth page load animation
+.card-hover — cards lift up on hover
+
+These custom classes will be used across all our pages to keep the design consistent. ✅
+
+
+Now let's set up routing in App.jsx — this is where you'll learn how React Router works!
+
+Before writing, understand React Router:
+In normal HTML websites, each page is a separate .html file. In React, we have one single HTML file (index.html) and React Router simulates page navigation by showing/hiding different components based on the URL.
+URL: /login        → show Login component
+URL: /register     → show Register component
+URL: /dashboard    → show Dashboard component
+URL: /projects     → show Projects component
+No page refresh happens — it's all smooth client-side navigation. This is what makes React apps feel fast! ✅
+
+Understand the key things here:
+ProtectedRoute component:
+This is a wrapper component — if user is logged in, show the page. If not, redirect to /login. This is how we protect frontend routes just like we protected backend routes with middleware.
+Navigate component:
+This is React Router's way of redirecting. <Navigate to="/login" /> automatically takes user to login page.
+loading state:
+While we're checking if user is logged in (fetching from API), we show a spinner instead of flashing the login page. Better user experience! ✅
+
+
+context/AuthContext.jsx
+Before writing, understand what Context is:
+In React, data normally flows from parent to child through props. But imagine you have user data in App.jsx and you need it in Navbar, Dashboard, Projects — you'd have to pass it through every component in between. This is called prop drilling and it's messy.
+React Context solves this — it's like a global store that any component can access directly without passing props through every level.
+Without Context:                With Context:
+App (has user data)             AuthContext (has user data)
+  ↓ pass as prop                    ↓ any component can access directly
+  Layout                            Navbar ✅
+    ↓ pass as prop                  Dashboard ✅
+    Navbar ✅                       Projects ✅
+Our AuthContext will store:
+
+user — logged in user info
+loading — is auth being checked?
+login() — function to log in
+logout() — function to log out
+
+Any component in our app can access these directly! ✅
+
+Understand the key things here:
+localStorage:
+This is browser storage — data saved here persists even after page refresh or closing browser. We save the JWT token here so user stays logged in even after refreshing the page.
+useEffect with empty []:
+Runs once when the app first loads. We check if a token exists in localStorage — if yes, we verify it with the backend and restore the user session automatically.
+axios.defaults.headers.common['Authorization']:
+Instead of manually adding the token to every API request, we set it once in axios defaults and it automatically gets sent with every future request.
+useAuth custom hook:
+Instead of writing useContext(AuthContext) every time in every component, we created a shortcut useAuth(). Clean and simple! ✅
+
+Why wrap in main.jsx?
+AuthProvider wraps the entire app — this means every single component inside has access to auth data. If we wrapped only part of the app, other parts wouldn't have access.
+
+Login.jsx
+useState:
+In HTML you directly manipulate the DOM. In React, we use useState to store values that can change — like form input values. When state changes, React automatically re-renders the component.
+jsconst [email, setEmail] = useState('')
+// email = current value
+// setEmail = function to update it
+// '' = initial value
+useState for forms:
+Every input field gets its own state variable. When user types, we update state. When form submits, we read from state.
+
+New things to understand:
+useNavigate:
+React Router hook that lets us programmatically navigate to a different page. After successful login we call navigate('/dashboard') to redirect user.
+e.preventDefault():
+By default, form submission refreshes the page. We prevent that and handle it ourselves with our async function.
+err.response?.data?.message:
+The ?. is optional chaining — if err.response is undefined, it won't crash, just returns undefined. We use || to fall back to a generic message.
+onFocus / onBlur:
+When input is focused (clicked), border turns cyan. When unfocused, goes back to default. This is the interactive feel! ✅
+
+
+Register.jsx
+One new thing to understand:
+handleChange with single function for all inputs:
+jsconst handleChange = (e) => {
+  setFormData({ ...formData, [e.target.name]: e.target.value })
+}
+Instead of writing separate onChange for each field, we use one function. [e.target.name] dynamically picks the field name (name, username, email, password) and updates only that field. 
+The ...formData spreads existing values so other fields don't get cleared. This is cleaner than Login where each field had its own state! ✅
+
