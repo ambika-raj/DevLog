@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: 'https://devlog-eis1.onrender.com/',
+  baseURL: 'https://devlog-eis1.onrender.com',
 })
 
 // Automatically attach token to every request

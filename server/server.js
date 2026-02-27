@@ -19,7 +19,7 @@ const app = express();
 // middleware
 // app.use(cors());
 app.use(cors({
-  origin: ['https://ambi-devlog.vercel.app/', 'http://localhost:5173'],
+  origin: ['https://ambi-devlog.vercel.app', 'http://localhost:5173'],
   credentials: true
 }))
 app.use(express.json()); // this lets use read json data from request body
