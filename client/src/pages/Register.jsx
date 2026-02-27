@@ -1,6 +1,6 @@
 // import { useState } from 'react'
 // import { Link, useNavigate } from 'react-router-dom'
-// import axios from 'axios'
+// import axios from 'axios'\nimport API from '../api/axios'
 // import { useAuth } from '../context/AuthContext'
 // import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiAtSign } from 'react-icons/fi'
 
@@ -27,7 +27,7 @@
 //     setError('')
 //     setLoading(true)
 //     try {
-//       await axios.post('https://devlog-eis1.onrender.comapi/auth/register', formData)
+//       await API.post('https://devlog-eis1.onrender.com/api/auth/register', formData)
 //       await login(formData.email, formData.password)
 //       navigate('/dashboard')
 //     } catch (err) {

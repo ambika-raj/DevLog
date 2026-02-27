@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import axios from 'axios'
+import axios from 'axios'\nimport API from '../api/axios'
 import { FiGithub, FiExternalLink, FiFolder, FiMapPin } from 'react-icons/fi'
 
 const statusColors = {
@@ -18,7 +18,7 @@ const PublicProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`https://devlog-eis1.onrender.comapi/public/${username}`)
+        const res = await axios.get(`https://devlog-eis1.onrender.com/api/public/${username}`)
         setData(res.data)
       } catch (err) {
         setNotFound(true)

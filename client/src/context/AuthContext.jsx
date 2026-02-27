@@ -1,5 +1,5 @@
 // import { createContext, useContext, useState, useEffect } from 'react'
-// import axios from 'axios'
+// import axios from 'axios'\nimport API from '../api/axios'
 
 // // Step 1 - Create the context
 // const AuthContext = createContext()
@@ -20,7 +20,7 @@
 //           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
 //           // fetch user info
-//           const res = await axios.get('https://devlog-eis1.onrender.comapi/auth/me')
+//           const res = await API.get('https://devlog-eis1.onrender.com/api/auth/me')
 //           setUser(res.data)
 //         } catch (error) {
 //           // token invalid or expired
@@ -37,7 +37,7 @@
 
 //   // Step 4 - Login function
 //   const login = async (email, password) => {
-//     const res = await axios.post('https://devlog-eis1.onrender.comapi/auth/login', {
+//     const res = await API.post('https://devlog-eis1.onrender.com/api/auth/login', {
 //       email,
 //       password,
 //     })
@@ -70,7 +70,7 @@
 // export const useAuth = () => useContext(AuthContext)
 
 import { createContext, useContext, useState, useEffect } from 'react'
-import axios from 'axios'
+import axios from 'axios'\nimport API from '../api/axios'
 import API from '../api/axios'
 
 const AuthContext = createContext()

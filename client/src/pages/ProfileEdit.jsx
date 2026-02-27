@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
+import axios from 'axios'\nimport API from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
 import { FiArrowLeft, FiUpload, FiUser, FiGlobe, FiFileText } from 'react-icons/fi'
@@ -21,7 +21,7 @@ const ProfileEdit = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('https://devlog-eis1.onrender.comapi/profile')
+        const res = await API.get('https://devlog-eis1.onrender.com/api/profile')
         const u = res.data
         setFormData({
           name: u.name || '',
@@ -55,7 +55,7 @@ const ProfileEdit = () => {
       const data = new FormData()
       Object.entries(formData).forEach(([key, val]) => data.append(key, val))
       if (profilePic) data.append('profilePic', profilePic)
-      await axios.put('https://devlog-eis1.onrender.comapi/profile', data, {
+      await API.put('https://devlog-eis1.onrender.com/api/profile', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       setSuccess('Profile updated successfully!')

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
-import axios from 'axios'
+import axios from 'axios'\nimport API from '../api/axios'
 import Navbar from '../components/Navbar'
 import { FiArrowLeft, FiUpload, FiX } from 'react-icons/fi'
 
@@ -21,7 +21,7 @@ const EditProject = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await axios.get(`https://devlog-eis1.onrender.comapi/projects/${id}`)
+        const res = await axios.get(`https://devlog-eis1.onrender.com/api/projects/${id}`)
         const p = res.data
         setFormData({
           title: p.title || '',
@@ -74,7 +74,7 @@ const EditProject = () => {
         else if (val !== undefined && val !== null) data.append(key, val)
       })
       if (thumbnail) data.append('thumbnail', thumbnail)
-      await axios.put(`https://devlog-eis1.onrender.comapi/projects/${id}`, data, {
+      await axios.put(`https://devlog-eis1.onrender.com/api/projects/${id}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       navigate('/projects')

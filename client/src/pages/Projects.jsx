@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axios from 'axios'\nimport API from '../api/axios'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import ProjectCard from '../components/ProjectCard'
@@ -19,7 +19,7 @@ const Projects = () => {
       const params = {}
       if (search) params.search = search
       if (statusFilter !== 'All') params.status = statusFilter
-      const res = await axios.get('https://devlog-eis1.onrender.comapi/projects', { params })
+      const res = await API.get('https://devlog-eis1.onrender.com/api/projects', { params })
       setProjects(res.data)
     } catch (err) {
       console.error(err)
@@ -36,7 +36,7 @@ const Projects = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this project?')) return
     try {
-      await axios.delete(`https://devlog-eis1.onrender.comapi/projects/${id}`)
+      await axios.delete(`https://devlog-eis1.onrender.com/api/projects/${id}`)
       setProjects(projects.filter(p => p._id !== id))
     } catch (err) {
       console.error(err)

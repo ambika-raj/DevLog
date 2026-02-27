@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
+import axios from 'axios'\nimport API from '../api/axios'
 import Navbar from '../components/Navbar'
 import { FiArrowLeft, FiUpload, FiX } from 'react-icons/fi'
 
@@ -54,7 +54,7 @@ const AddProject = () => {
   //       else if (val !== undefined && val !== null) data.append(key, val)
   //     })
   //     if (thumbnail) data.append('thumbnail', thumbnail)
-  //     await axios.post('https://devlog-eis1.onrender.comapi/projects', data, {
+  //     await API.post('https://devlog-eis1.onrender.com/api/projects', data, {
   //       headers: { 'Content-Type': 'multipart/form-data' }
   //     })
   //     navigate('/projects')

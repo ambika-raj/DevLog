@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axios from 'axios'\nimport API from '../api/axios'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
@@ -16,7 +16,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get('https://devlog-eis1.onrender.comapi/projects')
+        const res = await API.get('https://devlog-eis1.onrender.com/api/projects')
         setProjects(res.data)
       } catch (err) {
         console.error(err)
@@ -53,7 +53,7 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this project?')) return
     try {
-      await axios.delete(`https://devlog-eis1.onrender.comapi/projects/${id}`)
+      await axios.delete(`https://devlog-eis1.onrender.com/api/projects/${id}`)
       setProjects(projects.filter(p => p._id !== id))
     } catch (err) {
       console.error(err)
