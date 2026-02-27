@@ -70,7 +70,8 @@
 // export const useAuth = () => useContext(AuthContext)
 
 import { createContext, useContext, useState, useEffect } from 'react'
-import axios from 'axios'\nimport API from '../api/axios'
+import axios from 'axios'
+import API from '../api/axios'
 import API from '../api/axios'
 
 const AuthContext = createContext()

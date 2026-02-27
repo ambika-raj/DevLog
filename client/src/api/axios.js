@@ -1,4 +1,5 @@
-import axios from 'axios'\nimport API from '../api/axios'
+import axios from 'axios'  
+import API from '../api/axios'
 
 const API = axios.create({
   baseURL: 'https://devlog-eis1.onrender.com',
