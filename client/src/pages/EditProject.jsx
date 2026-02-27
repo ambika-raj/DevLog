@@ -21,7 +21,7 @@ const EditProject = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/projects/${id}`)
+        const res = await axios.get(`https://devlog-eis1.onrender.com//api/projects/${id}`)
         const p = res.data
         setFormData({
           title: p.title || '',
@@ -31,7 +31,7 @@ const EditProject = () => {
           githubLink: p.githubLink || '',
           liveLink: p.liveLink || ''
         })
-        if (p.thumbnail) setThumbnailPreview(`http://localhost:5000${p.thumbnail}`)
+        if (p.thumbnail) setThumbnailPreview(`https://devlog-eis1.onrender.com/${p.thumbnail}`)
       } catch (err) {
         setError('Failed to load project')
       } finally {
@@ -74,7 +74,7 @@ const EditProject = () => {
         else if (val !== undefined && val !== null) data.append(key, val)
       })
       if (thumbnail) data.append('thumbnail', thumbnail)
-      await axios.put(`http://localhost:5000/api/projects/${id}`, data, {
+      await axios.put(`https://devlog-eis1.onrender.com//api/projects/${id}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       navigate('/projects')

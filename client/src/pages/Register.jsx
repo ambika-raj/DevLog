@@ -27,7 +27,7 @@ const Register = () => {
     setError('')
     setLoading(true)
     try {
-      await axios.post('http://localhost:5000/api/auth/register', formData)
+      await axios.post('https://devlog-eis1.onrender.com//api/auth/register', formData)
       await login(formData.email, formData.password)
       navigate('/dashboard')
     } catch (err) {

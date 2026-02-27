@@ -16,7 +16,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/projects')
+        const res = await axios.get('https://devlog-eis1.onrender.com//api/projects')
         setProjects(res.data)
       } catch (err) {
         console.error(err)
@@ -53,7 +53,7 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this project?')) return
     try {
-      await axios.delete(`http://localhost:5000/api/projects/${id}`)
+      await axios.delete(`https://devlog-eis1.onrender.com//api/projects/${id}`)
       setProjects(projects.filter(p => p._id !== id))
     } catch (err) {
       console.error(err)
