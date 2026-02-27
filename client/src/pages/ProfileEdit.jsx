@@ -21,14 +21,14 @@ const ProfileEdit = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('https://devlog-eis1.onrender.com//api/profile')
+        const res = await axios.get('https://devlog-eis1.onrender.comapi/profile')
         const u = res.data
         setFormData({
           name: u.name || '',
           bio: u.bio || '',
           country: u.country || ''
         })
-        if (u.profilePic) setProfilePicPreview(`https://devlog-eis1.onrender.com/${u.profilePic}`)
+        if (u.profilePic) setProfilePicPreview(`https://devlog-eis1.onrender.com${u.profilePic}`)
       } catch (err) {
         setError('Failed to load profile')
       } finally {
@@ -55,7 +55,7 @@ const ProfileEdit = () => {
       const data = new FormData()
       Object.entries(formData).forEach(([key, val]) => data.append(key, val))
       if (profilePic) data.append('profilePic', profilePic)
-      await axios.put('https://devlog-eis1.onrender.com//api/profile', data, {
+      await axios.put('https://devlog-eis1.onrender.comapi/profile', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       setSuccess('Profile updated successfully!')

@@ -19,7 +19,7 @@ const Projects = () => {
       const params = {}
       if (search) params.search = search
       if (statusFilter !== 'All') params.status = statusFilter
-      const res = await axios.get('https://devlog-eis1.onrender.com//api/projects', { params })
+      const res = await axios.get('https://devlog-eis1.onrender.comapi/projects', { params })
       setProjects(res.data)
     } catch (err) {
       console.error(err)
@@ -36,7 +36,7 @@ const Projects = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this project?')) return
     try {
-      await axios.delete(`https://devlog-eis1.onrender.com//api/projects/${id}`)
+      await axios.delete(`https://devlog-eis1.onrender.comapi/projects/${id}`)
       setProjects(projects.filter(p => p._id !== id))
     } catch (err) {
       console.error(err)

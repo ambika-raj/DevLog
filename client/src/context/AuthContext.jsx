@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
           // fetch user info
-          const res = await axios.get('https://devlog-eis1.onrender.com/api/auth/me')
+          const res = await axios.get('https://devlog-eis1.onrender.comapi/auth/me')
           setUser(res.data)
         } catch (error) {
           // token invalid or expired
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
 
   // Step 4 - Login function
   const login = async (email, password) => {
-    const res = await axios.post('https://devlog-eis1.onrender.com/api/auth/login', {
+    const res = await axios.post('https://devlog-eis1.onrender.comapi/auth/login', {
       email,
       password,
     })
