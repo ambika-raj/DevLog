@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
+import axios from 'axios'\nimport API from '../api/axios'
 import Navbar from '../components/Navbar'
 import { FiArrowLeft, FiGithub, FiExternalLink, FiEdit2, FiTrash2, FiCalendar, FiClock } from 'react-icons/fi'
 
@@ -19,7 +19,7 @@ const ProjectDetail = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/projects/${id}`)
+        const res = await axios.get(`https://devlog-eis1.onrender.com/api/projects/${id}`)
         setProject(res.data)
       } catch (err) {
         console.error(err)
@@ -33,7 +33,7 @@ const ProjectDetail = () => {
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this project?')) return
     try {
-      await axios.delete(`http://localhost:5000/api/projects/${id}`)
+      await axios.delete(`https://devlog-eis1.onrender.com/api/projects/${id}`)
       navigate('/projects')
     } catch (err) {
       console.error(err)
@@ -86,7 +86,7 @@ const ProjectDetail = () => {
               overflow: 'hidden', marginBottom: '28px',
               border: '1px solid rgba(255,255,255,0.07)'
             }}>
-              <img src={`http://localhost:5000${project.thumbnail}`} alt={project.title}
+              <img src={`https://devlog-eis1.onrender.com${project.thumbnail}`} alt={project.title}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           )}
