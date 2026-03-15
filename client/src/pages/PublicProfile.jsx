@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import axios from 'axios'\nimport API from '../api/axios'
+import axios from 'axios'
+import API from '../api/axios'
 import { FiGithub, FiExternalLink, FiFolder, FiMapPin } from 'react-icons/fi'
 
 const statusColors = {

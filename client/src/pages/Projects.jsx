@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'\nimport API from '../api/axios'
+import axios from 'axios'
+import API from '../api/axios'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import ProjectCard from '../components/ProjectCard'

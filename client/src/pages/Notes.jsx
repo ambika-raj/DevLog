@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import axios from 'axios'\nimport API from '../api/axios'
+import axios from 'axios'
+import API from '../api/axios'
 import Navbar from '../components/Navbar'
 import { FiPlus, FiTrash2, FiEdit2, FiCheck, FiX } from 'react-icons/fi'
 

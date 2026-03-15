@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'\nimport API from '../api/axios'
+import axios from 'axios'
+import API from '../api/axios'
 import Navbar from '../components/Navbar'
 import { FiArrowLeft, FiUpload, FiX } from 'react-icons/fi'
 
