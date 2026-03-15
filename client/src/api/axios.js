@@ -18,11 +18,7 @@
 import axios from 'axios'
 
 const API = axios.create({
-<<<<<<< HEAD
   baseURL: 'https://devlog-eis1.onrender.com',
-=======
-  baseURL: import.meta.env.VITE_API_URL || '',
->>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
 })
 
 API.interceptors.request.use((config) => {

@@ -19,11 +19,7 @@ const PublicProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-<<<<<<< HEAD
         const res = await axios.get(`/api/public/${username}`)
-=======
-        const res = await axios.get(`https://devlog-eis1.onrender.com/api/public/${username}`)
->>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
         setData(res.data)
       } catch (err) {
         setNotFound(true)

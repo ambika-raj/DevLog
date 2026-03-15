@@ -89,11 +89,8 @@ export const AuthProvider = ({ children }) => {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
           API.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
-<<<<<<< HEAD
           // fetch user info
           // const res = await axios.get('/api/auth/me')
-=======
->>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
           const res = await API.get('/api/auth/me')
           setUser(res.data)
         } catch (error) {
@@ -110,10 +107,7 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const login = async (email, password) => {
-<<<<<<< HEAD
     // const res = await axios.post('/api/auth/login', {
-=======
->>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
     const res = await API.post('/api/auth/login', {
       email,
       password,

@@ -22,11 +22,7 @@ const EditProject = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-<<<<<<< HEAD
         const res = await axios.get(`/api/projects/${id}`)
-=======
-        const res = await axios.get(`https://devlog-eis1.onrender.com/api/projects/${id}`)
->>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
         const p = res.data
         setFormData({
           title: p.title || '',
@@ -79,11 +75,7 @@ const EditProject = () => {
         else if (val !== undefined && val !== null) data.append(key, val)
       })
       if (thumbnail) data.append('thumbnail', thumbnail)
-<<<<<<< HEAD
       await axios.put(`/api/projects/${id}`, data, {
-=======
-      await axios.put(`https://devlog-eis1.onrender.com/api/projects/${id}`, data, {
->>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       navigate('/projects')

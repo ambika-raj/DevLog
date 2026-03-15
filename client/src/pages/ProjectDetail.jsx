@@ -20,11 +20,7 @@ const ProjectDetail = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-<<<<<<< HEAD
         const res = await axios.get(`/api/projects/${id}`)
-=======
-        const res = await axios.get(`https://devlog-eis1.onrender.com/api/projects/${id}`)
->>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
         setProject(res.data)
       } catch (err) {
         console.error(err)
@@ -38,11 +34,7 @@ const ProjectDetail = () => {
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this project?')) return
     try {
-<<<<<<< HEAD
       await axios.delete(`/api/projects/${id}`)
-=======
-      await axios.delete(`https://devlog-eis1.onrender.com/api/projects/${id}`)
->>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
       navigate('/projects')
     } catch (err) {
       console.error(err)

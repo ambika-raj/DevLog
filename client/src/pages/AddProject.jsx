@@ -55,11 +55,7 @@ const AddProject = () => {
   //       else if (val !== undefined && val !== null) data.append(key, val)
   //     })
   //     if (thumbnail) data.append('thumbnail', thumbnail)
-<<<<<<< HEAD
   //     await axios.post('/api/projects', data, {
-=======
-  //     await API.post('https://devlog-eis1.onrender.com/api/projects', data, {
->>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
   //       headers: { 'Content-Type': 'multipart/form-data' }
   //     })
   //     navigate('/projects')
