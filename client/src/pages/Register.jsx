@@ -28,8 +28,7 @@ const Register = () => {
     setError('')
     setLoading(true)
     try {
-      // await axios.post('/api/auth/register', formData)
-      await API.post('/api/auth/register', formData)
+      await axios.post('http://localhost:5000/api/auth/register', formData)
       await login(formData.email, formData.password)
       navigate('/dashboard')
     } catch (err) {
@@ -308,3 +307,20 @@ const Register = () => {
 }
 
 export default Register
+
+// import API from '../api/axios'  // add this import at top
+
+// const handleSubmit = async (e) => {
+//   e.preventDefault()
+//   setError('')
+//   setLoading(true)
+//   try {
+//     await API.post('/api/auth/register', formData)  // use API, not axios
+//     await login(formData.email, formData.password)
+//     navigate('/dashboard')
+//   } catch (err) {
+//     setError(err.response?.data?.message || 'Something went wrong')
+//   } finally {
+//     setLoading(false)
+//   }
+// }

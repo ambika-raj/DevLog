@@ -17,7 +17,15 @@ connectDB();
 const app = express();
 
 // middleware
-app.use(cors());
+// app.use(cors());
+// app.use(cors({
+//   origin: ['https://ambi-devlog.vercel.app', 'http://localhost:5173'],
+//   credentials: true
+// }))
+app.use(cors({
+  origin: '*',
+  credentials: false
+}))
 app.use(express.json()); // this lets use read json data from request body
 app.use("/uploads", express.static("uploads")); // this serves uploaded images as static files
 

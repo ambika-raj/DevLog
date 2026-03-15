@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
+import API from '../api/axios'
 import Navbar from '../components/Navbar'
 import { FiPlus, FiTrash2, FiEdit2, FiCheck, FiX } from 'react-icons/fi'
 
@@ -31,7 +32,11 @@ const Notes = () => {
 
   const fetchNotes = async () => {
     try {
+<<<<<<< HEAD
       const res = await axios.get('/api/notes')
+=======
+      const res = await API.get('https://devlog-eis1.onrender.com/api/notes')
+>>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
       setNotes(res.data)
     } catch (err) {
       console.error(err)
@@ -43,7 +48,11 @@ const Notes = () => {
   const handleCreate = async () => {
     if (!newNote.title && !newNote.content) { setCreating(false); return }
     try {
+<<<<<<< HEAD
       const res = await axios.post('/api/notes', newNote)
+=======
+      const res = await API.post('https://devlog-eis1.onrender.com/api/notes', newNote)
+>>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
       setNotes([res.data, ...notes])
       setNewNote({ title: '', content: '', color: '#1e293b' })
       setCreating(false)
@@ -59,7 +68,11 @@ const Notes = () => {
 
   const handleUpdate = async (id) => {
     try {
+<<<<<<< HEAD
       const res = await axios.put(`/api/notes/${id}`, editData)
+=======
+      const res = await axios.put(`https://devlog-eis1.onrender.com/api/notes/${id}`, editData)
+>>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
       setNotes(notes.map(n => n._id === id ? res.data : n))
       setEditingId(null)
     } catch (err) {
@@ -70,7 +83,11 @@ const Notes = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this note?')) return
     try {
+<<<<<<< HEAD
       await axios.delete(`/api/notes/${id}`)
+=======
+      await axios.delete(`https://devlog-eis1.onrender.com/api/notes/${id}`)
+>>>>>>> d73a41cc4a259a73d5120d7c7070bf8deab1c9cb
       setNotes(notes.filter(n => n._id !== id))
     } catch (err) {
       console.error(err)
