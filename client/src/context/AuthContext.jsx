@@ -20,7 +20,8 @@ export const AuthProvider = ({ children }) => {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
           // fetch user info
-          const res = await axios.get('http://localhost:5000/api/auth/me')
+          // const res = await axios.get('/api/auth/me')
+          const res = await API.get('/api/auth/me')
           setUser(res.data)
         } catch (error) {
           // token invalid or expired
@@ -37,7 +38,8 @@ export const AuthProvider = ({ children }) => {
 
   // Step 4 - Login function
   const login = async (email, password) => {
-    const res = await axios.post('http://localhost:5000/api/auth/login', {
+    // const res = await axios.post('/api/auth/login', {
+    const res = await API.post('/api/auth/login', {
       email,
       password,
     })

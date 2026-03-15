@@ -1,7 +1,7 @@
 // import axios from 'axios'
 
 // const API = axios.create({
-//   baseURL: 'http://localhost:5000',
+//   baseURL: 'https://devlog-eis1.onrender.com',
 // })
 
 // // Automatically attach token to every request
@@ -18,7 +18,7 @@
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+  baseURL: 'https://devlog-eis1.onrender.com',
 })
 
 API.interceptors.request.use((config) => {
