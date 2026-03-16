@@ -32,7 +32,7 @@ const Notes = () => {
 
   const fetchNotes = async () => {
     try {
-      const res = await axios.get('/api/notes')
+      const res = await API.get('/api/notes')
       setNotes(res.data)
     } catch (err) {
       console.error(err)
@@ -44,7 +44,7 @@ const Notes = () => {
   const handleCreate = async () => {
     if (!newNote.title && !newNote.content) { setCreating(false); return }
     try {
-      const res = await axios.post('/api/notes', newNote)
+      const res = await API.post('/api/notes', newNote)
       setNotes([res.data, ...notes])
       setNewNote({ title: '', content: '', color: '#1e293b' })
       setCreating(false)

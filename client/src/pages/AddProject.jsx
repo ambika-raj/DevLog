@@ -55,7 +55,7 @@ const AddProject = () => {
   //       else if (val !== undefined && val !== null) data.append(key, val)
   //     })
   //     if (thumbnail) data.append('thumbnail', thumbnail)
-  //     await axios.post('/api/projects', data, {
+  //     await API.post('/api/projects', data, {
   //       headers: { 'Content-Type': 'multipart/form-data' }
   //     })
   //     navigate('/projects')

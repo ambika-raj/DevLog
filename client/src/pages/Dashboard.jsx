@@ -17,7 +17,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        // const res = await axios.get('/api/projects')
+        // const res = await API.get('/api/projects')
         // setProjects(res.data)
         const res = await API.get('/api/projects')
         setProjects(Array.isArray(res.data) ? res.data : [])

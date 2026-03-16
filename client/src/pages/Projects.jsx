@@ -20,7 +20,7 @@ const Projects = () => {
       const params = {}
       if (search) params.search = search
       if (statusFilter !== 'All') params.status = statusFilter
-      const res = await axios.get('/api/projects', { params })
+      const res = await API.get('/api/projects', { params })
       setProjects(res.data)
     } catch (err) {
       console.error(err)

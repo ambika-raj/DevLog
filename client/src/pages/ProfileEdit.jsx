@@ -22,7 +22,7 @@ const ProfileEdit = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('/api/profile')
+        const res = await API.get('/api/profile')
         const u = res.data
         setFormData({
           name: u.name || '',
@@ -56,7 +56,7 @@ const ProfileEdit = () => {
       const data = new FormData()
       Object.entries(formData).forEach(([key, val]) => data.append(key, val))
       if (profilePic) data.append('profilePic', profilePic)
-      await axios.put('/api/profile', data, {
+      await API.put('/api/profile', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       setSuccess('Profile updated successfully!')
