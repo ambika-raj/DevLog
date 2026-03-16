@@ -40,7 +40,7 @@ const ProjectCard = ({ project, onDelete }) => {
       }}>
         {project.thumbnail ? (
           <img
-            src={{project.thumbnail}}
+            src={project.thumbnail}
             alt={project.title}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />

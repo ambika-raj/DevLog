@@ -113,7 +113,7 @@ const Navbar = () => {
                     textDecoration: 'none', flexShrink: 0
                 }}>
                 {user?.profilePic ? (
-                    <img src={{user?.profilePic}} alt="profile"
+                    <img src={user?.profilePic}} alt="profile"
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
                     <div style={{
