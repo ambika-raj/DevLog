@@ -17,8 +17,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get('/api/projects')
-        setProjects(res.data)
+        // const res = await axios.get('/api/projects')
+        // setProjects(res.data)
+        const res = await API.get('/api/projects')
+        setProjects(Array.isArray(res.data) ? res.data : [])
       } catch (err) {
         console.error(err)
       } finally {
@@ -54,7 +56,8 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this project?')) return
     try {
-      await axios.delete(`/api/projects/${id}`)
+      // await axios.delete(`/api/projects/${id}`)
+      await API.delete(`/api/projects/${id}`)
       setProjects(projects.filter(p => p._id !== id))
     } catch (err) {
       console.error(err)
