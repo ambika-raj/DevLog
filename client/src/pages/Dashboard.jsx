@@ -121,6 +121,8 @@ const Dashboard = () => {
                         background: '#0d1a2e', border: '1px solid rgba(255,255,255,0.08)',
                         borderRadius: '8px', color: '#e2e8f0', fontSize: '0.82rem'
                       }}
+                      itemStyle={{ color: '#e2e8f0' }}
+                      labelStyle={{ color: '#e2e8f0' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
