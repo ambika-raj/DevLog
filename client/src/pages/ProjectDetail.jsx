@@ -21,7 +21,7 @@ const ProjectDetail = () => {
     const fetchProject = async () => {
       try {
         const res = await API.get(`/api/projects/${id}`)
-        await API.delete(`/api/projects/${id}`)
+        setProject(res.data)  // ← should be this, not delete!
       } catch (err) {
         console.error(err)
       } finally {
