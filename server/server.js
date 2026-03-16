@@ -23,8 +23,8 @@ const app = express();
 //   credentials: true
 // }))
 app.use(cors({
-  origin: '*',
-  credentials: false
+  origin: ['https://ambi-devlog.netlify.app', 'http://localhost:5173'],
+  credentials: true
 }))
 app.use(express.json()); // this lets use read json data from request body
 app.use("/uploads", express.static("uploads")); // this serves uploaded images as static files
