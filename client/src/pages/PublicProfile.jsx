@@ -68,7 +68,7 @@ const PublicProfile = () => {
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px' }}>
               {/* Avatar */}
               {user.profilePic ? (
-                <img src={`https://devlog-eis1.onrender.com${user?.profilePic}`} alt={user.name}
+                <img src={user?.profilePic} alt={user.name}
                   style={{ width: '88px', height: '88px', borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(0,201,167,0.3)', flexShrink: 0 }} />
               ) : (
                 <div style={{
@@ -144,7 +144,7 @@ const PublicProfile = () => {
                   {/* Thumbnail */}
                   <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
                     {project.thumbnail ? (
-                      <img src={`https://devlog-eis1.onrender.com${project?.thumbnail}`} alt={project.title}
+                      <img src={project?.thumbnail} alt={project.title}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
                       <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #0d1a2e, #0a0f1e)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: '800', fontFamily: 'Syne, sans-serif', color: '#00C9A7' }}>
