@@ -42,49 +42,26 @@ const AddProject = () => {
     setFormData({ ...formData, techStack: formData.techStack.filter(t => t !== tech) })
   }
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault()
-  //   console.log('formData before submit:', formData) // ADD THIS
-  //   console.log('liveLink value:', formData.liveLink) // ADD THIS
-  //   if (!formData.title || !formData.description) { setError('Title and description are required'); return }
-  //   setLoading(true); setError('')
-  //   try {
-  //     const data = new FormData()
-  //     Object.entries(formData).forEach(([key, val]) => {
-  //       if (key === 'techStack') data.append(key, val.join(','))
-  //       else if (val !== undefined && val !== null) data.append(key, val)
-  //     })
-  //     if (thumbnail) data.append('thumbnail', thumbnail)
-  //     await API.post('/api/projects', data, {
-  //       headers: { 'Content-Type': 'multipart/form-data' }
-  //     })
-  //     navigate('/projects')
-  //   } catch (err) {
-  //     setError(err.response?.data?.message || 'Something went wrong')
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
-
 const handleSubmit = async (e) => {
-  e.preventDefault()
-  
-  // Debug — let's see every field being appended
-  const data = new FormData()
-  Object.entries(formData).forEach(([key, val]) => {
-    if (key === 'techStack') {
-      data.append(key, val.join(','))
-    } else {
-      data.append(key, val)
-      console.log(`Appending: ${key} = "${val}"`) // ADD THIS
+    e.preventDefault()
+    if (!formData.title || !formData.description) { setError('Title and description are required'); return }
+    setLoading(true); setError('')
+    try {
+      const data = new FormData()
+      Object.entries(formData).forEach(([key, val]) => {
+        if (key === 'techStack') data.append(key, val.join(','))
+        else if (val !== undefined && val !== null) data.append(key, val)
+      })
+      if (thumbnail) data.append('thumbnail', thumbnail)
+      await API.post('/api/projects', data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      navigate('/projects')
+    } catch (err) {
+      setError(err.response?.data?.message || 'Something went wrong')
+    } finally {
+      setLoading(false)
     }
-  })
-  if (thumbnail) data.append('thumbnail', thumbnail)
-
-  // Log all formData entries
-  for (let pair of data.entries()) {
-    console.log(`FormData entry: ${pair[0]} = "${pair[1]}"`)
-  }
 }
 
   const inputStyle = {
