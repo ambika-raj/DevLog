@@ -29,7 +29,7 @@ const ProfileEdit = () => {
           bio: u.bio || '',
           country: u.country || ''
         })
-        if (u.profilePic) setProfilePicPreview(`https://devlog-eis1.onrender.com${u.profilePic}`)
+        if (u.profilePic) setProfilePicPreview({u?.profilePic})
       } catch (err) {
         setError('Failed to load profile')
       } finally {

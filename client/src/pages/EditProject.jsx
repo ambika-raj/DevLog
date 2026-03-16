@@ -32,7 +32,7 @@ const EditProject = () => {
           githubLink: p.githubLink || '',
           liveLink: p.liveLink || ''
         })
-        if (p.thumbnail) setThumbnailPreview(`https://devlog-eis1.onrender.com${p.thumbnail}`)
+        if (p.thumbnail) setThumbnailPreview({p.thumbnail})
       } catch (err) {
         setError('Failed to load project')
       } finally {

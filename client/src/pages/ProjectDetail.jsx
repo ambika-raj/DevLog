@@ -87,7 +87,7 @@ const ProjectDetail = () => {
               overflow: 'hidden', marginBottom: '28px',
               border: '1px solid rgba(255,255,255,0.07)'
             }}>
-              <img src={`https://devlog-eis1.onrender.com${project.thumbnail}`} alt={project.title}
+              <img src={{project.thumbnail}} alt={project.title}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           )}

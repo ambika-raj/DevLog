@@ -13,7 +13,8 @@ const createProject = async (req, res) => {
         }
 
         // step 3 - get thumbnail path if uploaded
-        const thumbnail = req.file ? `/uploads/${req.file.filename}` : "";
+        // const thumbnail = req.file ? `/uploads/${req.file.filename}` : "";
+        thumbnail: req.file ? req.file.path : null
 
         // step 4 - handle techStack (comes as string from form , convert to array)
         const techStackArray = Array.isArray(techStack)
@@ -123,8 +124,11 @@ const updateProject = async (req, res) => {
     project.liveLink = req.body.liveLink !== undefined ? req.body.liveLink : project.liveLink
 
     // only update thumbnail if new file uploaded
+    // if (req.file) {
+    //   project.thumbnail = `/uploads/${req.file.filename}`
+    // }
     if (req.file) {
-      project.thumbnail = `/uploads/${req.file.filename}`
+        project.thumbnail = req.file.path
     }
 
     const updatedProject = await project.save()

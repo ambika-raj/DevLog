@@ -24,8 +24,11 @@ const updateProfile = async (req, res) => {
     user.bio = bio !== undefined ? bio : user.bio;
     user.country = country !== undefined ? country : user.country;
 
+    // if (req.file) {
+    //   user.profilePic = `/uploads/${req.file.filename}`;
+    // }
     if (req.file) {
-      user.profilePic = `/uploads/${req.file.filename}`;
+      user.profilePic = req.file.path
     }
 
     const updatedUser = await user.save();

@@ -8,7 +8,8 @@ const {
     deleteProject,
 } = require("../controllers/projectController");
 const { project, protect } = require("../middleware/authMiddleware");
-const upload = require("../utils/multer");
+// const upload = require("../utils/multer");
+const { upload } = require('../utils/cloudinary')
 
 // All routes are protected
 router.post("/", protect, upload.single("thumbnail"), createProject);
