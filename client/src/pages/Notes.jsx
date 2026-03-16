@@ -60,7 +60,7 @@ const Notes = () => {
 
   const handleUpdate = async (id) => {
     try {
-      const res = await axios.put(`/api/notes/${id}`, editData)
+      const res = await API.put(`/api/notes/${id}`, editData)
       setNotes(notes.map(n => n._id === id ? res.data : n))
       setEditingId(null)
     } catch (err) {
@@ -71,7 +71,7 @@ const Notes = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this note?')) return
     try {
-      await axios.delete(`/api/notes/${id}`)
+      await API.delete(`/api/notes/${id}`)
       setNotes(notes.filter(n => n._id !== id))
     } catch (err) {
       console.error(err)

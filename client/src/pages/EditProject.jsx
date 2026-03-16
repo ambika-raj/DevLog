@@ -22,7 +22,7 @@ const EditProject = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await axios.get(`/api/projects/${id}`)
+        const res = await API.get(`/api/projects/${id}`)
         const p = res.data
         setFormData({
           title: p.title || '',
@@ -75,7 +75,7 @@ const EditProject = () => {
         else if (val !== undefined && val !== null) data.append(key, val)
       })
       if (thumbnail) data.append('thumbnail', thumbnail)
-      await axios.put(`/api/projects/${id}`, data, {
+      await API.put(`/api/projects/${id}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       navigate('/projects')

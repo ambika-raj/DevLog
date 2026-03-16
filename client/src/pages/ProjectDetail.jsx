@@ -20,8 +20,8 @@ const ProjectDetail = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await axios.get(`/api/projects/${id}`)
-        setProject(res.data)
+        const res = await API.get(`/api/projects/${id}`)
+        await API.delete(`/api/projects/${id}`)
       } catch (err) {
         console.error(err)
       } finally {
@@ -34,7 +34,7 @@ const ProjectDetail = () => {
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this project?')) return
     try {
-      await axios.delete(`/api/projects/${id}`)
+      await API.delete(`/api/projects/${id}`)
       navigate('/projects')
     } catch (err) {
       console.error(err)
